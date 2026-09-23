@@ -826,6 +826,24 @@ body { font-size: 15px; line-height: 1.65; }
 .content-page__body img { height: auto; }
 .projects-listing { background: var(--gold-pale); }
 .projects-listing .project-card h2 { margin-bottom: .5rem; color: var(--gold); font-size: 1.35rem; }
+.form-page { background: var(--gold-pale); }
+.form-page__container { max-width: 900px; }
+.form-page .section-heading { margin-bottom: 2rem; }
+.form-page h1 { color: var(--gold); }
+.public-form { display: grid; gap: 1.25rem; padding: clamp(1.25rem, 4vw, 2.5rem); border: 1px solid #e8e1d6; border-radius: 8px; background: #fff; box-shadow: 0 6px 24px rgb(48 39 25 / 6%); }
+.public-form__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.15rem 1.25rem; }
+.public-form__field { display: flex; min-width: 0; flex-direction: column; gap: .4rem; }
+.public-form__field label { color: var(--ink); font-weight: 600; }
+.public-form__field label span { color: var(--rose); }
+.public-form__field input, .public-form__field textarea { width: 100%; min-height: 3rem; padding: .75rem .85rem; border: 1px solid #cbc5bb; border-radius: 4px; color: var(--ink); background: #fff; font: inherit; }
+.public-form__field textarea { min-height: 11rem; resize: vertical; }
+.public-form__field input:focus-visible, .public-form__field textarea:focus-visible { border-color: var(--rose); outline: 3px solid rgb(197 30 73 / 18%); outline-offset: 1px; }
+.public-form__field [aria-invalid="true"] { border-color: #a7133a; }
+.form-error { margin: 0; color: #a7133a; font-size: .92rem; }
+.form-errors { padding: .9rem 1rem; border-left: 4px solid #a7133a; color: #7d102d; background: #fff0f3; }
+.form-errors h2 { margin: 0; color: inherit; font-size: 1rem; }
+.form-success { margin: 0 auto 1.25rem; padding: 1rem 1.25rem; border-left: 4px solid #287446; color: #205b39; background: #edf8f0; }
+.public-form > .button { justify-self: start; }
 .blog-intro { min-height: 660px; display: flex; align-items: center; background: var(--gold-pale); }
 .blog-intro__inner { display: block; }
 .blog-intro__feature { width: min(100%, 560px); }
@@ -899,6 +917,7 @@ body { font-size: 15px; line-height: 1.65; }
     .cta-banner__inner { width: min(var(--content-width), calc(100% - 2rem)); align-items: center; flex-direction: column; gap: 1.5rem; text-align: center; }
     .cta-banner h2 { text-align: center; }
     .cta-banner .button { align-self: center; }
+    .public-form__grid { grid-template-columns: 1fr; }
     .gallery-section .container { width: calc(100vw - 2rem); }
     .campaign-section__inner { grid-template-columns: 1fr; }
     .campaign-section__media { order: 0; }
