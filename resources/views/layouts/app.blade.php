@@ -18,8 +18,12 @@
     @hasSection('og_image')
         <meta property="og:image" content="@yield('og_image')">
     @endif
-    @hasSection('meta_description')
-        <meta property="og:description" content="@yield('meta_description')">
+    @hasSection('og_description')
+        <meta property="og:description" content="@yield('og_description')">
+    @else
+        @hasSection('meta_description')
+            <meta property="og:description" content="@yield('meta_description')">
+        @endif
     @endif
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('og_title', trim($__env->yieldContent('title', 'Henna Foundation')))">

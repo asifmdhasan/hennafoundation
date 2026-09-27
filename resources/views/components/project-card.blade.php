@@ -6,7 +6,6 @@
             class="project-card__image"
             src="{{ $project['image_url'] }}"
             width="768"
-            height="512"
             alt="{{ $project['image_alt'] ?? 'Image for '.$project['title'] }}"
             loading="lazy"
             decoding="async"

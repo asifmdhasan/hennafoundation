@@ -6,6 +6,7 @@ use App\Models\Media;
 use App\Models\Page;
 use App\Models\Project;
 use App\Models\User;
+use App\Models\WebsiteSetting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -32,22 +33,36 @@ class PublicPagesTest extends TestCase
     {
         Page::query()->where('slug', 'about-us')->update([
             'title' => 'About Henna Foundation from the CMS',
-            'content' => '<p>Content entered through Filament.</p>',
+            'content' => '<p>Legacy page field must not be rendered.</p>',
             'excerpt' => 'CMS supplied introduction.',
             'status' => 'published',
             'published_at' => now(),
             'meta_title' => 'About Us SEO title',
             'meta_description' => 'About Us SEO description.',
             'canonical_url' => 'https://example.org/about-us/',
+            'og_title' => 'About Us Open Graph title',
+            'og_description' => 'About Us Open Graph description.',
         ]);
+        WebsiteSetting::query()->updateOrCreate(
+            ['key' => 'about_inspiration_heading'],
+            ['value' => 'Inspiration heading entered through About Us Editor.', 'group' => 'about-us'],
+        );
+        WebsiteSetting::query()->updateOrCreate(
+            ['key' => 'about_inspiration_paragraphs'],
+            ['value' => json_encode(['Content entered through About Us Editor.']), 'group' => 'about-us'],
+        );
 
         $this->get('/about-us/')
             ->assertOk()
             ->assertViewIs('pages.about-us')
             ->assertSee('About Henna Foundation from the CMS')
-            ->assertSee('Content entered through Filament.')
+            ->assertSee('Inspiration heading entered through About Us Editor.')
+            ->assertSee('Content entered through About Us Editor.')
+            ->assertDontSee('Legacy page field must not be rendered.')
             ->assertSee('<title>About Us SEO title</title>', false)
             ->assertSee('<meta name="description" content="About Us SEO description.">', false)
+            ->assertSee('<meta property="og:title" content="About Us Open Graph title">', false)
+            ->assertSee('<meta property="og:description" content="About Us Open Graph description.">', false)
             ->assertSee('<link rel="canonical" href="https://example.org/about-us/">', false);
     }
 
@@ -138,6 +153,11 @@ class PublicPagesTest extends TestCase
             ->assertSee('alt="Uploaded project image"', false)
             ->assertDontSee('/wp-content/')
             ->assertDontSee('wp.com');
+
+        $this->assertDoesNotMatchRegularExpression(
+            '/<img[^>]*class="project-card__image"[^>]*\sheight=/s',
+            $response->getContent(),
+        );
     }
 
     public function test_projects_page_handles_an_empty_published_project_list(): void

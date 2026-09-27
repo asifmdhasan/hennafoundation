@@ -29,7 +29,6 @@
                                     class="project-card__image"
                                     src="{{ $item['image_url'] }}"
                                     width="768"
-                                    height="512"
                                     alt="{{ $item['image_alt'] }}"
                                     loading="lazy"
                                     decoding="async"

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Forms\Components\MediaPickerField;
 use App\Models\Media;
 use App\Models\Page as ContentPage;
 use App\Models\WebsiteSetting;
@@ -14,6 +15,8 @@ use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Facades\Validator;
+use Livewire\Attributes\On;
 
 class ManageHomepage extends Page
 {
@@ -166,12 +169,7 @@ class ManageHomepage extends Page
                     ->schema([
                         TextInput::make('home_gallery_eyebrow')->label('Small heading'),
                         TextInput::make('home_gallery_title')->label('Section heading'),
-                        Select::make('gallery_media_ids')
-                            ->label('Gallery images')
-                            ->multiple()
-                            ->options(fn () => $this->mediaOptions())
-                            ->searchable()
-                            ->preload()
+                        $this->mediaPicker('gallery_media_ids', 'Gallery images', true)
                             ->columnSpanFull(),
                     ]),
                 Section::make('7. Blog section')
@@ -243,6 +241,17 @@ class ManageHomepage extends Page
     public function save(): void
     {
         $data = $this->form->getState();
+
+        Validator::make($data, [
+            'hero_image_id' => ['nullable', 'integer', 'exists:media,id'],
+            'home_actions' => ['nullable', 'array'],
+            'home_actions.*.image_media_id' => ['nullable', 'integer', 'exists:media,id'],
+            'home_main_cta_image_id' => ['nullable', 'integer', 'exists:media,id'],
+            'campaign_image_id' => ['nullable', 'integer', 'exists:media,id'],
+            'gallery_media_ids' => ['nullable', 'array'],
+            'gallery_media_ids.*' => ['integer', 'exists:media,id'],
+            'site_logo_media_id' => ['nullable', 'integer', 'exists:media,id'],
+        ])->validate();
 
         $homePage = ContentPage::query()->firstOrCreate(
             ['slug' => 'home'],
@@ -334,24 +343,42 @@ class ManageHomepage extends Page
         Notification::make()->title('Homepage updated')->success()->send();
     }
 
-    private function mediaSelect(string $name, string $label): Select
+    #[On('media-picker-selected')]
+    public function applyMediaPickerSelection(string $statePath, array $mediaIds, bool $multiple = false): void
     {
-        return Select::make($name)
-            ->label($label)
-            ->options(fn () => $this->mediaOptions())
-            ->searchable()
-            ->preload()
-            ->nullable()
-            ->helperText('Choose an image already uploaded in Media.');
+        if (! str_starts_with($statePath, 'data.')) {
+            return;
+        }
+
+        $relativePath = substr($statePath, 5);
+        $fieldName = str($relativePath)->afterLast('.')->toString();
+        $allowedFields = ['hero_image_id', 'image_media_id', 'home_main_cta_image_id', 'campaign_image_id', 'gallery_media_ids', 'site_logo_media_id'];
+        if (! in_array($fieldName, $allowedFields, true) || ($multiple !== ($fieldName === 'gallery_media_ids'))) {
+            return;
+        }
+
+        $validIds = Media::query()->whereIn('id', $mediaIds)->pluck('id')->map(fn ($id): int => (int) $id)->all();
+        if (count($validIds) !== count(array_unique($mediaIds))) {
+            return;
+        }
+
+        $state = $this->data ?? [];
+        data_set($state, $relativePath, $multiple ? $validIds : ($validIds[0] ?? null));
+        $this->data = $state;
     }
 
-    private function mediaOptions(): array
+    private function mediaSelect(string $name, string $label): MediaPickerField
     {
-        return Media::query()
-            ->orderBy('original_filename')
-            ->get(['id', 'original_filename', 'alt_text'])
-            ->mapWithKeys(fn (Media $media) => [$media->id => $media->original_filename.($media->alt_text ? ' — '.$media->alt_text : '')])
-            ->all();
+        return $this->mediaPicker($name, $label);
+    }
+
+    private function mediaPicker(string $name, string $label, bool $multiple = false): MediaPickerField
+    {
+        return MediaPickerField::make($name)
+            ->label($label)
+            ->multiple($multiple)
+            ->nullable()
+            ->rules($multiple ? ['nullable', 'array'] : ['nullable', 'integer', 'exists:media,id']);
     }
 
     private function decode(?string $value): array
