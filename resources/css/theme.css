@@ -926,10 +926,10 @@ body { font-size: 15px; line-height: 1.65; }
 
 .about-page-title { padding-block: 3rem; }
 .about-page-title h1 { margin-bottom: 0; color: var(--gold); }
-.about-hero { position: relative; display: flex; min-height: 300px; align-items: center; color: #fff; background-color: var(--gold); background-image: var(--about-hero-image, none); background-position: center; background-size: cover; }
+.about-hero { position: relative; display: flex; min-height: clamp(24rem, 29vw, 30rem); align-items: center; color: #fff; background-color: var(--gold); background-image: var(--about-hero-image, none); background-position: center; background-size: cover; }
 .about-hero--overlay { isolation: isolate; }
 .about-hero--overlay::before { position: absolute; z-index: -1; inset: 0; background: linear-gradient(90deg, rgb(35 25 19 / 62%), rgb(35 25 19 / 16%)); content: ""; }
-.about-hero__inner { padding-block: 3.25rem; }
+.about-hero__inner { padding-block: clamp(6rem, 9vw, 8rem); }
 .about-hero__breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; margin-bottom: 1rem; color: #fff; font-size: .9rem; }
 .about-hero__breadcrumb a { text-underline-offset: .2em; }
 .about-hero h1 { margin-bottom: .5rem; color: #fff; }
@@ -937,20 +937,19 @@ body { font-size: 15px; line-height: 1.65; }
 .about-section .eyebrow { color: var(--rose); }
 .about-inspiration { background: #fff; }
 .about-inspiration__layout { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); align-items: center; gap: clamp(2rem, 6vw, 5rem); }
-.about-inspiration__gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: .8rem; }
-.about-inspiration__image { margin: 0; overflow: hidden; border-radius: 5px; background: var(--gray-light); }
-.about-inspiration__image img, .about-patron__media img, .about-trustee__image { display: block; width: 100%; height: auto; }
+.about-inspiration__gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: 1rem; min-width: 0; }
+.about-inspiration__gallery .image-gallery__item { min-width: 0; }
+.about-patron__media img { display: block; width: min(100%, 28rem); aspect-ratio: 4 / 3; border-radius: 6px; object-fit: cover; }
 .about-inspiration__copy h2, .about-patron__copy h2, .about-trustees h2, .about-goals h2, .about-heart h2, .about-plan h2, .about-charity h2 { color: var(--gold); }
 .about-inspiration__copy p:not(.eyebrow) { line-height: 1.8; }
 .about-inspiration__copy .button { margin-top: .5rem; }
 .about-patron { background: var(--gold-pale); }
 .about-patron__layout { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: center; gap: clamp(2rem, 6vw, 5rem); }
-.about-patron__media img { border-radius: 6px; }
 .about-patron__designation { color: var(--rose); font-weight: 600; }
 .about-trustees { background: #fff; }
 .about-trustees__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
 .about-trustee { min-width: 0; padding: 1rem; border: 1px solid #eee8df; border-radius: 6px; background: #fff; text-align: center; }
-.about-trustee__image { margin-bottom: 1rem; border-radius: 4px; }
+.about-trustee__image { display: block; width: 100%; aspect-ratio: 4 / 5; margin-bottom: 1rem; border-radius: 4px; object-fit: cover; object-position: center; }
 .about-trustee h3 { margin-bottom: .3rem; color: var(--gold); }
 .about-trustee__designation { margin-bottom: .75rem; }
 .about-trustee__social { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; margin: 0; padding: 0; list-style: none; }
@@ -959,6 +958,7 @@ body { font-size: 15px; line-height: 1.65; }
 .about-goals__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; }
 .about-goal { min-width: 0; padding: 1.5rem; border-radius: 6px; background: #fff; box-shadow: 0 3px 16px rgb(50 40 30 / 6%); }
 .about-goal__icon { display: inline-flex; min-width: 2.5rem; min-height: 2.5rem; align-items: center; justify-content: center; margin-bottom: .8rem; border-radius: 50%; color: var(--rose); background: #fae9ed; font-size: 1.25rem; }
+.about-goal__icon-image { display: block; width: 2.5rem; height: 2.5rem; margin-bottom: .8rem; object-fit: contain; }
 .about-goal h3 { color: var(--gold); }
 .about-goal p { margin-bottom: 0; }
 .about-heart { color: #fff; background: #50483d; }
@@ -1009,8 +1009,9 @@ body { font-size: 15px; line-height: 1.65; }
 }
 
 @media (max-width: 620px) {
-    .about-hero { min-height: 230px; }
-    .about-hero__inner { padding-block: 2.5rem; }
+    .about-hero { min-height: 17rem; }
+    .about-hero__inner { padding-block: 4rem; }
     .about-inspiration__layout, .about-patron__layout { grid-template-columns: minmax(0, 1fr); }
+    .about-inspiration__gallery { gap: .6rem; }
     .about-trustees__grid, .about-goals__grid, .about-plan__list { grid-template-columns: minmax(0, 1fr); }
 }

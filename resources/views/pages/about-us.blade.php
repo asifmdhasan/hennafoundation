@@ -39,9 +39,9 @@
         <section class="about-section about-inspiration section-pad" aria-labelledby="about-inspiration-title">
             <div class="container about-inspiration__layout">
                 @if ($content['inspiration']['images']->isNotEmpty())
-                    <div class="about-inspiration__gallery">
+                    <div class="about-inspiration__gallery image-gallery">
                         @foreach ($content['inspiration']['images'] as $image)
-                            <figure class="about-inspiration__image">
+                            <figure class="image-gallery__item">
                                 <img src="{{ $image['url'] }}" alt="{{ $image['alt'] }}" loading="lazy" decoding="async">
                             </figure>
                         @endforeach
@@ -149,7 +149,9 @@
                     <div class="about-goals__grid">
                         @foreach ($content['goals']['items'] as $goal)
                             <article class="about-goal">
-                                @if (filled($goal['icon'] ?? null))
+                                @if (! empty($goal['icon_image']))
+                                    <img class="about-goal__icon-image" src="{{ $goal['icon_image']['url'] }}" alt="" aria-hidden="true" loading="lazy" decoding="async">
+                                @elseif (filled($goal['icon'] ?? null))
                                     <span class="about-goal__icon" aria-hidden="true">{{ $goal['icon'] }}</span>
                                 @endif
                                 @if (filled($goal['title'] ?? null))

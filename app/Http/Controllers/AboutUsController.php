@@ -54,7 +54,12 @@ class AboutUsController extends Controller
                 return $trustee;
             });
 
-        $goals = $this->visibleItems($this->decode($settings->get('about_goals')));
+        $goals = $this->visibleItems($this->decode($settings->get('about_goals')))
+            ->map(function (array $goal): array {
+                $goal['icon_image'] = $this->imageById($goal['icon_media_id'] ?? null);
+
+                return $goal;
+            });
         $planItems = $this->visibleItems($this->decode($settings->get('about_plan_items')));
         $patronImage = $this->imageById($settings->get('about_patron_image_media_id'));
         $donateUrl = $this->publicUrl($settings->get('about_inspiration_button_url'));

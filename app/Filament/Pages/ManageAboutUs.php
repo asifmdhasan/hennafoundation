@@ -193,7 +193,7 @@ class ManageAboutUs extends Page
                         Repeater::make('goals')
                             ->label('Goal cards')
                             ->schema([
-                                TextInput::make('icon')->label('Icon symbol')->maxLength(20)->helperText('Optional symbol or emoji. Leave blank if you do not want one.'),
+                                $this->mediaSelect('icon_media_id', 'Icon image'),
                                 TextInput::make('title')->label('Goal title')->required()->maxLength(255),
                                 Textarea::make('description')->label('Description')->rows(3)->required(),
                                 Toggle::make('is_visible')->label('Visible on public page')->default(true),
@@ -345,7 +345,7 @@ class ManageAboutUs extends Page
 
         $relativePath = substr($statePath, 5);
         $fieldName = str($relativePath)->afterLast('.')->toString();
-        $allowedFields = ['hero_image_media_id', 'inspiration_image_ids', 'patron_image_media_id', 'image_media_id'];
+        $allowedFields = ['hero_image_media_id', 'inspiration_image_ids', 'patron_image_media_id', 'image_media_id', 'icon_media_id'];
         if (! in_array($fieldName, $allowedFields, true) || ($multiple !== ($fieldName === 'inspiration_image_ids'))) {
             return;
         }
