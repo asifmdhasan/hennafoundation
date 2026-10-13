@@ -107,15 +107,19 @@
                     <div class="about-trustees__grid">
                         @foreach ($content['trustees']['items'] as $trustee)
                             <article class="about-trustee">
-                                @if ($trustee['image'])
-                                    <img class="about-trustee__image" src="{{ $trustee['image']['url'] }}" alt="{{ $trustee['image']['alt'] }}" loading="lazy" decoding="async">
-                                @endif
-                                @if (filled($trustee['name'] ?? null))
-                                    <h3>{{ $trustee['name'] }}</h3>
-                                @endif
-                                @if (filled($trustee['designation'] ?? null))
-                                    <p class="about-trustee__designation">{{ $trustee['designation'] }}</p>
-                                @endif
+                                <a class="about-trustee__profile-link" href="{{ route('trustees.show', $trustee['slug']) }}" aria-label="View {{ $trustee['name'] }}’s trustee profile">
+                                    @if ($trustee['image'])
+                                        <div class="about-trustee__media">
+                                            <img class="about-trustee__image" src="{{ $trustee['image']['url'] }}" alt="{{ $trustee['image']['alt'] }}" loading="lazy" decoding="async">
+                                        </div>
+                                    @endif
+                                    @if (filled($trustee['name'] ?? null))
+                                        <h3>{{ $trustee['name'] }}</h3>
+                                    @endif
+                                    @if (filled($trustee['designation'] ?? null))
+                                        <p class="about-trustee__designation">{{ $trustee['designation'] }}</p>
+                                    @endif
+                                </a>
                                 @if (count($trustee['social_links'] ?? []))
                                     <ul class="about-trustee__social" aria-label="Profile links">
                                         @foreach ($trustee['social_links'] as $link)

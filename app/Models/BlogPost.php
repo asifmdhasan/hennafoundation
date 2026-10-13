@@ -26,6 +26,7 @@ class BlogPost extends Model
         'og_title',
         'og_description',
         'og_image_media_id',
+        'featured_image_path',
     ];
 
     protected function casts(): array

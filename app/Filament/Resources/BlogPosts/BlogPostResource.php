@@ -11,6 +11,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -58,6 +59,16 @@ class BlogPostResource extends Resource
                             ->unique(ignoreRecord: true)
                             ->helperText('You can edit this URL. Existing published URLs are not changed when the title changes.'),
                         Textarea::make('excerpt')->rows(3)->columnSpanFull(),
+                        FileUpload::make('featured_image_path')
+                            ->label('Featured image')
+                            ->image()
+                            ->disk('public')
+                            ->directory('blog')
+                            ->visibility('public')
+                            ->maxSize(5120)
+                            ->imageEditor()
+                            ->helperText('Upload the image shown on the public blog card. Maximum 5 MB.')
+                            ->columnSpanFull(),
                         RichEditor::make('content')->columnSpanFull(),
                     ]),
                 Section::make('Publishing and organization')
@@ -78,8 +89,11 @@ class BlogPostResource extends Resource
                             ->options(['draft' => 'Draft', 'published' => 'Published'])
                             ->in(['draft', 'published'])
                             ->default('draft')
+                            ->helperText('Only Published posts appear publicly. A future publish date keeps the post hidden until then.')
                             ->required(),
-                        DateTimePicker::make('published_at')->nullable(),
+                        DateTimePicker::make('published_at')
+                            ->timezone('Asia/Dhaka')
+                            ->nullable(),
                     ]),
                 Section::make('Search engine and social sharing')
                     ->columns(2)
@@ -108,8 +122,8 @@ class BlogPostResource extends Resource
                 TextColumn::make('title')->searchable()->sortable(),
                 TextColumn::make('author.name')->label('Author')->sortable()->searchable()->placeholder('—'),
                 TextColumn::make('status')->badge()->sortable(),
-                TextColumn::make('published_at')->dateTime()->sortable()->placeholder('Not scheduled'),
-                TextColumn::make('created_at')->dateTime()->sortable(),
+                TextColumn::make('published_at')->dateTime(timezone: 'Asia/Dhaka')->sortable()->placeholder('Not scheduled'),
+                TextColumn::make('created_at')->dateTime(timezone: 'Asia/Dhaka')->sortable(),
             ])
             ->filters([
                 SelectFilter::make('status')->options(['draft' => 'Draft', 'published' => 'Published']),

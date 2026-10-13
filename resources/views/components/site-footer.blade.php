@@ -3,13 +3,11 @@
 <footer class="site-footer">
     <div class="container site-footer__columns">
         <section class="site-footer__about" aria-label="{{ $settings->get('footer_heading', 'Henna Foundation') }}">
-            <a class="site-footer__logo" href="{{ route('home') }}" aria-label="{{ $settings->get('footer_heading', 'Henna Foundation') }} home">
-                @if ($settings->get('footer_logo_url'))
-                    <img src="{{ $settings->get('footer_logo_url') }}" alt="{{ $settings->get('footer_heading', 'Henna Foundation') }}" width="310" height="100" loading="lazy">
-                @else
-                    <span class="site-brand__mark" aria-hidden="true">h</span><span class="site-brand__words">{{ $settings->get('footer_heading', 'Henna Foundation') }}</span>
-                @endif
-            </a>
+            @if ($settings->get('footer_logo_url') ?: $settings->get('site_logo_url'))
+                <a class="site-footer__logo" href="{{ route('home') }}" aria-label="{{ $settings->get('footer_heading', 'Henna Foundation') }} home">
+                    <img src="{{ $settings->get('footer_logo_url') ?: $settings->get('site_logo_url') }}" alt="{{ $settings->get('footer_heading', 'Henna Foundation') }}" width="400" height="130" loading="lazy">
+                </a>
+            @endif
             @if ($settings->get('footer_text'))
                 <div class="site-footer__description">{!! (new \Symfony\Component\HtmlSanitizer\HtmlSanitizer((new \Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig())->allowSafeElements()->allowRelativeLinks()))->sanitize($settings->get('footer_text')) !!}</div>
             @elseif ($settings->get('purpose_statement'))

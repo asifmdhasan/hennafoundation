@@ -81,7 +81,6 @@ class ManageAboutUs extends Page
             'show_trustees' => $this->boolean($settings->get('about_show_trustees'), true),
             'trustees_eyebrow' => $settings->get('about_trustees_eyebrow'),
             'trustees_heading' => $settings->get('about_trustees_heading'),
-            'trustees' => $this->decode($settings->get('about_trustees')),
             'show_goals' => $this->boolean($settings->get('about_show_goals'), true),
             'goals_eyebrow' => $settings->get('about_goals_eyebrow'),
             'goals_heading' => $settings->get('about_goals_heading'),
@@ -165,23 +164,9 @@ class ManageAboutUs extends Page
                         Toggle::make('show_trustees')->label('Show this section')->default(true),
                         TextInput::make('trustees_eyebrow')->label('Small heading')->maxLength(255),
                         TextInput::make('trustees_heading')->label('Section heading')->required(fn (Get $get): bool => (bool) $get('show_trustees'))->maxLength(255),
-                        Repeater::make('trustees')
-                            ->label('Trustees')
-                            ->schema([
-                                TextInput::make('name')->label('Name')->required()->maxLength(255),
-                                TextInput::make('designation')->label('Designation/title')->maxLength(255),
-                                $this->mediaSelect('image_media_id', 'Profile image'),
-                                TextInput::make('facebook_url')->label('Facebook URL')->rules(['nullable', 'url:http,https'])->maxLength(2048),
-                                TextInput::make('twitter_url')->label('Twitter/X URL')->rules(['nullable', 'url:http,https'])->maxLength(2048),
-                                TextInput::make('linkedin_url')->label('LinkedIn URL')->rules(['nullable', 'url:http,https'])->maxLength(2048),
-                                TextInput::make('instagram_url')->label('Instagram URL')->rules(['nullable', 'url:http,https'])->maxLength(2048),
-                                TextInput::make('other_profile_url')->label('Other social/profile URL')->rules(['nullable', 'url:http,https'])->maxLength(2048),
-                                Toggle::make('is_visible')->label('Visible on public page')->default(true),
-                            ])
-                            ->columns(2)
-                            ->addActionLabel('Add trustee')
-                            ->defaultItems(0)
-                            ->reorderable()
+                        \Filament\Forms\Components\Placeholder::make('trustees_admin_note')
+                            ->label('Trustee profiles')
+                            ->content('Create and manage trustee profiles under Content → Trustees. Set each profile to Draft or Published there; published profiles appear in this section.')
                             ->columnSpanFull(),
                     ]),
                 Section::make('5. Our goals')
@@ -302,7 +287,6 @@ class ManageAboutUs extends Page
                 'about_show_trustees' => $this->asBoolean($data['show_trustees'] ?? false),
                 'about_trustees_eyebrow' => $data['trustees_eyebrow'] ?? '',
                 'about_trustees_heading' => $data['trustees_heading'] ?? '',
-                'about_trustees' => $this->json($this->orderedItems($data['trustees'] ?? [])),
                 'about_show_goals' => $this->asBoolean($data['show_goals'] ?? false),
                 'about_goals_eyebrow' => $data['goals_eyebrow'] ?? '',
                 'about_goals_heading' => $data['goals_heading'] ?? '',

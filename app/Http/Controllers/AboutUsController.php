@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Concerns\LoadsPublicSiteSettings;
 use App\Models\Media;
 use App\Models\Page;
+use App\Models\Trustee;
 use App\Models\WebsiteSetting;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -40,18 +41,30 @@ class AboutUsController extends Controller
             ->filter()
             ->values();
 
-        $trustees = $this->visibleItems($this->decode($settings->get('about_trustees')))
-            ->map(function (array $trustee): array {
-                $trustee['image'] = $this->imageById($trustee['image_media_id'] ?? null);
-                $trustee['social_links'] = collect([
-                    ['label' => 'Facebook', 'symbol' => 'f', 'url' => $this->externalUrl($trustee['facebook_url'] ?? null)],
-                    ['label' => 'Twitter/X', 'symbol' => '𝕏', 'url' => $this->externalUrl($trustee['twitter_url'] ?? null)],
-                    ['label' => 'LinkedIn', 'symbol' => 'in', 'url' => $this->externalUrl($trustee['linkedin_url'] ?? null)],
-                    ['label' => 'Instagram', 'symbol' => '◎', 'url' => $this->externalUrl($trustee['instagram_url'] ?? null)],
-                    ['label' => 'Other profile', 'symbol' => '↗', 'url' => $this->externalUrl($trustee['other_profile_url'] ?? null)],
+        $trustees = Trustee::query()
+            ->where('status', 'published')
+            ->where(fn ($query) => $query->whereNull('published_at')->orWhere('published_at', '<=', now()))
+            ->with('image')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get()
+            ->map(function (Trustee $trustee): array {
+                $trusteeImage = $this->image($trustee->image);
+                $socialLinks = collect([
+                    ['label' => 'Facebook', 'symbol' => 'f', 'url' => $this->externalUrl($trustee->facebook_url)],
+                    ['label' => 'Twitter/X', 'symbol' => '𝕏', 'url' => $this->externalUrl($trustee->twitter_url)],
+                    ['label' => 'LinkedIn', 'symbol' => 'in', 'url' => $this->externalUrl($trustee->linkedin_url)],
+                    ['label' => 'Instagram', 'symbol' => '◎', 'url' => $this->externalUrl($trustee->instagram_url)],
+                    ['label' => 'Other profile', 'symbol' => '↗', 'url' => $this->externalUrl($trustee->other_profile_url)],
                 ])->filter(fn (array $link): bool => filled($link['url']))->values()->all();
 
-                return $trustee;
+                return [
+                    'name' => $trustee->name,
+                    'slug' => $trustee->slug,
+                    'designation' => $trustee->designation,
+                    'image' => $trusteeImage,
+                    'social_links' => $socialLinks,
+                ];
             });
 
         $goals = $this->visibleItems($this->decode($settings->get('about_goals')))
