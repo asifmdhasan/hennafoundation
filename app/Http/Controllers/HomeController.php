@@ -7,11 +7,14 @@ use App\Models\Project;
 use App\Models\BlogPost;
 use App\Models\Media;
 use App\Models\WebsiteSetting;
+use App\Http\Controllers\Concerns\LoadsPublicSiteSettings;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
+    use LoadsPublicSiteSettings;
+
     public function __invoke(): View
     {
         $projects = Project::query()
@@ -83,6 +86,7 @@ class HomeController extends Controller
         $ctaMedia = $sectionMedia->get($settings->get('home_main_cta_image_id'));
         $logoMedia = Media::query()->find($settings->get('site_logo_media_id'));
         $settings['site_logo_url'] = $logoMedia ? Storage::disk($logoMedia->disk)->url($logoMedia->path) : null;
+        $settings = $this->withFooterSettings($settings);
         $gallery = $homePage?->mediaAttachments
             ->filter(fn ($media) => $media->pivot->role !== 'hero')
             ->map(fn ($media) => [

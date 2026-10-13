@@ -81,24 +81,6 @@ class ManageHomepage extends Page
             'home_blog_cta_url' => $settings->get('home_blog_cta_url'),
             'home_empty_projects' => $settings->get('home_empty_projects'),
             'home_empty_blog' => $settings->get('home_empty_blog'),
-            'home_nav_items' => $this->decode($settings->get('home_nav_items')),
-            'site_logo_media_id' => $settings->get('site_logo_media_id'),
-            'site_website_display' => $settings->get('site_website_display'),
-            'site_website_url' => $settings->get('site_website_url'),
-            'contact_email' => $settings->get('contact_email'),
-            'address' => $settings->get('address'),
-            'social_facebook' => $settings->get('social_facebook'),
-            'social_twitter' => $settings->get('social_twitter'),
-            'social_instagram' => $settings->get('social_instagram'),
-            'social_youtube' => $settings->get('social_youtube'),
-            'footer_heading' => $settings->get('footer_heading'),
-            'footer_links_heading' => $settings->get('footer_links_heading'),
-            'footer_contact_heading' => $settings->get('footer_contact_heading'),
-            'footer_links' => $this->decode($settings->get('footer_links')),
-            'footer_text' => $settings->get('footer_text'),
-            'footer_credit' => $settings->get('footer_credit'),
-            'footer_copyright_text' => $settings->get('footer_copyright_text'),
-            'footer_charity_label' => $settings->get('footer_charity_label'),
             'home_actions_aria' => $settings->get('home_actions_aria'),
         ]);
     }
@@ -188,52 +170,6 @@ class ManageHomepage extends Page
                         TextInput::make('home_blog_cta_url')->label('Button URL'),
                         Textarea::make('home_empty_blog')->label('Message when there are no published posts')->rows(2)->columnSpanFull(),
                     ]),
-                Section::make('8. Header, contact and navigation')
-                    ->schema([
-                        $this->mediaSelect('site_logo_media_id', 'Site logo'),
-                        TextInput::make('contact_email')->label('Contact email')->email(),
-                        TextInput::make('address')->label('Address'),
-                        TextInput::make('site_website_display')->label('Website text'),
-                        TextInput::make('site_website_url')->label('Website URL')->url(),
-                        TextInput::make('social_facebook')->label('Facebook URL')->url(),
-                        TextInput::make('social_twitter')->label('Twitter URL')->url(),
-                        TextInput::make('social_instagram')->label('Instagram URL')->url(),
-                        TextInput::make('social_youtube')->label('YouTube URL')->url(),
-                        Repeater::make('home_nav_items')
-                            ->label('Navigation links')
-                            ->schema([
-                                TextInput::make('label')->label('Link text')->required(),
-                                TextInput::make('url')->label('URL')->required(),
-                                \Filament\Forms\Components\Toggle::make('is_cta')->label('Highlight as button'),
-                            ])
-                            ->columns(3)
-                            ->addActionLabel('Add navigation link')
-                            ->defaultItems(0),
-                    ]),
-                Section::make('9. Footer')
-                    ->columns(2)
-                    ->schema([
-                        TextInput::make('footer_heading')->label('Footer about heading'),
-                        TextInput::make('footer_links_heading')->label('Footer links heading'),
-                        TextInput::make('footer_contact_heading')->label('Footer contact heading'),
-                        TextInput::make('footer_website_label')->label('Website label'),
-                        TextInput::make('footer_email_label')->label('Email label'),
-                        TextInput::make('footer_address_label')->label('Address label'),
-                        TextInput::make('footer_copyright_text')->label('Copyright line'),
-                        TextInput::make('footer_charity_label')->label('Charity number label'),
-                        Textarea::make('footer_text')->label('Footer text')->rows(3)->columnSpanFull(),
-                        Repeater::make('footer_links')
-                            ->label('Footer links')
-                            ->schema([
-                                TextInput::make('label')->label('Link text')->required(),
-                                TextInput::make('url')->label('URL')->required(),
-                            ])
-                            ->columns(2)
-                            ->addActionLabel('Add footer link')
-                            ->defaultItems(0)
-                            ->columnSpanFull(),
-                        TextInput::make('footer_credit')->label('Footer credit text')->columnSpanFull(),
-                    ]),
             ])
             ->statePath('data');
     }
@@ -250,7 +186,6 @@ class ManageHomepage extends Page
             'campaign_image_id' => ['nullable', 'integer', 'exists:media,id'],
             'gallery_media_ids' => ['nullable', 'array'],
             'gallery_media_ids.*' => ['integer', 'exists:media,id'],
-            'site_logo_media_id' => ['nullable', 'integer', 'exists:media,id'],
         ])->validate();
 
         $homePage = ContentPage::query()->firstOrCreate(
@@ -301,27 +236,6 @@ class ManageHomepage extends Page
             'home_blog_cta' => $data['home_blog_cta'] ?? '',
             'home_blog_cta_url' => $data['home_blog_cta_url'] ?? '',
             'home_empty_blog' => $data['home_empty_blog'] ?? '',
-            'home_nav_items' => $this->json($data['home_nav_items'] ?? []),
-            'site_logo_media_id' => $data['site_logo_media_id'] ?? '',
-            'site_website_display' => $data['site_website_display'] ?? '',
-            'site_website_url' => $data['site_website_url'] ?? '',
-            'contact_email' => $data['contact_email'] ?? '',
-            'address' => $data['address'] ?? '',
-            'social_facebook' => $data['social_facebook'] ?? '',
-            'social_twitter' => $data['social_twitter'] ?? '',
-            'social_instagram' => $data['social_instagram'] ?? '',
-            'social_youtube' => $data['social_youtube'] ?? '',
-            'footer_heading' => $data['footer_heading'] ?? '',
-            'footer_links_heading' => $data['footer_links_heading'] ?? '',
-            'footer_contact_heading' => $data['footer_contact_heading'] ?? '',
-            'footer_website_label' => $data['footer_website_label'] ?? '',
-            'footer_email_label' => $data['footer_email_label'] ?? '',
-            'footer_address_label' => $data['footer_address_label'] ?? '',
-            'footer_links' => $this->json($data['footer_links'] ?? []),
-            'footer_text' => $data['footer_text'] ?? '',
-            'footer_credit' => $data['footer_credit'] ?? '',
-            'footer_copyright_text' => $data['footer_copyright_text'] ?? '',
-            'footer_charity_label' => $data['footer_charity_label'] ?? '',
         ];
 
         foreach ($values as $key => $value) {

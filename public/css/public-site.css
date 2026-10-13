@@ -258,3 +258,31 @@ body { font-size: 15px; line-height: 1.65; }
     .about-inspiration__layout, .about-patron__layout { grid-template-columns: minmax(0, 1fr); }
     .about-trustees__grid, .about-goals__grid, .about-plan__list { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Footer manager content: readable rich text, compact contacts and balanced credits. */
+.site-footer__columns { grid-template-columns: minmax(0, 1.45fr) minmax(180px, .7fr) minmax(280px, 1fr); gap: clamp(2rem, 6vw, 6rem); padding-block: 4rem 5rem; }
+.site-footer__description { max-width: 34rem; }
+.site-footer__description p { margin-bottom: .75rem; }
+.site-footer__description p:last-child { margin-bottom: 0; }
+.site-footer__description strong { font-weight: 700; }
+.site-footer__logo img { width: 310px; max-height: 100px; }
+.site-footer h2 { color: var(--rose); font-size: 1.35rem; }
+.site-footer__links li { padding-left: 1.25rem; }
+.footer-contact-item__icon img { width: 2rem; height: 2rem; object-fit: contain; }
+.site-footer__bottom-inner { display: grid; grid-template-columns: 1fr auto 1fr; }
+.site-footer__bottom-inner > p:last-child { justify-self: end; }
+.site-footer__bottom-inner a { color: inherit; }
+.site-footer__social { gap: .6rem; }
+.site-footer__social .social-icon { display: inline-flex; width: 2.45rem; height: 2.45rem; align-items: center; justify-content: center; border-radius: 50%; color: #fff; background: var(--rose); font-size: .85rem; font-weight: 700; text-decoration: none; }
+.site-footer__social img { width: 1.2rem; height: 1.2rem; object-fit: contain; }
+@media (max-width: 900px) {
+    .site-footer__columns { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; }
+    .site-footer__about { grid-column: 1 / -1; }
+    .site-footer__bottom-inner { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+    .site-footer__bottom-inner > p:last-child { justify-self: center; }
+}
+@media (max-width: 620px) {
+    .site-footer__columns { grid-template-columns: minmax(0, 1fr); gap: 2rem; padding-block: 2.5rem; }
+    .site-footer__about { grid-column: auto; }
+    .site-footer__logo img { width: min(100%, 280px); }
+}
